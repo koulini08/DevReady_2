@@ -2,7 +2,13 @@
 
 import { useState } from "react"
 import { cn } from "@/lib/utils"
-import { Terminal, Copy, Check, ChevronDown, Apple, Monitor } from "lucide-react"
+import { Terminal, Copy, Check, ChevronDown, Apple, Monitor, ExternalLink } from "lucide-react"
+
+interface PlatformDownload {
+  os: "windows" | "macos" | "linux"
+  url: string
+  label: string
+}
 
 interface Command {
   os: "windows" | "macos" | "linux"
@@ -15,6 +21,7 @@ interface Recommendation {
   description: string
   severity: "critical" | "warning" | "info"
   commands: Command[]
+  downloads: PlatformDownload[]
 }
 
 interface RecommendationsPanelProps {
@@ -89,6 +96,7 @@ function RecommendationCard({ recommendation }: { recommendation: Recommendation
   }
 
   const filteredCommands = recommendation.commands.filter((c) => c.os === selectedOs)
+  const filteredDownload = recommendation.downloads.find((d) => d.os === selectedOs)
 
   return (
     <div
@@ -144,8 +152,25 @@ function RecommendationCard({ recommendation }: { recommendation: Recommendation
             ))}
           </div>
 
+          {/* Download link for selected platform */}
+          {filteredDownload && (
+            <div className="p-3 rounded-lg bg-primary/10 border border-primary/30">
+              <p className="text-xs text-muted-foreground mb-2">Official Download:</p>
+              <a
+                href={filteredDownload.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm text-primary hover:underline font-medium"
+              >
+                <ExternalLink className="w-4 h-4" />
+                {filteredDownload.label}
+              </a>
+            </div>
+          )}
+
           {/* Commands */}
           <div className="space-y-2">
+            <p className="text-xs text-muted-foreground">Terminal Commands:</p>
             {filteredCommands.length > 0 ? (
               filteredCommands.map((cmd, i) => (
                 <CommandBlock key={i} command={cmd.command} os={cmd.os} />
