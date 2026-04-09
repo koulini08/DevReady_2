@@ -379,8 +379,8 @@ export function Dashboard() {
   const recommendations = useMemo(() => generateRecommendations(tools), [tools])
 
   const calculateHealth = useCallback(() => {
-    const installedTools = tools.filter((t) => t.installed).length
-    const upToDateTools = tools.filter((t) => t.installed && !t.isOutdated).length
+    const installedTools = tools.filter((t: ToolInfo) => t.installed).length
+    const upToDateTools = tools.filter((t: ToolInfo) => t.installed && !t.isOutdated).length
     const totalTools = tools.length
     
     if (installedTools === 0) return 20
